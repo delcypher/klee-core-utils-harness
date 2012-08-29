@@ -113,7 +113,7 @@ fi
 
 echo "Testing ${#UTILS[@]} utilites"
 
-for run in {1..3}
+for run in {1..1}
 do
 	echo "Starting run $run"
 	#We use sort so the utilities are executed in alphabetical order
@@ -137,13 +137,18 @@ do
 		echo "*****Running '${OUTPUT_DIR}' at $(date)"
 
 		#Now run klee
-		/usr/bin/time -p \
-		klee --solver=stp \
+		klee \
+		--solver=stp \
+#		--solver=smtlibv2 \
+#		--solver-path=stpwrap2 \
+#		--smtlibv2-solver-log-query-size \
+#		--smtlibv2-solver-use-lets \
 		--libc=uclibc \
 		--output-dir="${OUTPUT_DIR}" \
 		--posix-runtime \
 		--use-cex-cache \
-		--stop-after-n-instructions=2000000 \
+		--max-time=1200 \
+		--watchdog \
 		--run-in="${RUN_IN}" \
 		${UTIL_BC} \
 		${ARG} \
