@@ -24,21 +24,24 @@ if [ -r "${OUTPUT}" ]; then
 fi
 
 #Get a list of the klee directories
-KLEE_DIRS=$( echo "${INPUT_DIR} -type d -iname ${KLEE_DIR_PATTERN}" | xargs find | sort)
+KLEE_DIRS=$( echo -en "${INPUT_DIR}\0-type\0d\0-iname\0${KLEE_DIR_PATTERN}" | xargs --null find | sort)
 
 if [ -z "${KLEE_DIRS}" ]; then
 	echo "No ${KLEE_DIR_PATTERN} directories were found in ${INPUT_DIR}"
 	exit
 fi
 
-#Grab the header
-FIRST_UTIL=$( echo ${KLEE_DIRS} | grep -Eo '^\./klee-[a-z[0-9]+-[0-9]+' )
-klee-stats "${FIRST_UTIL}" | awk ' BEGIN { FS=" "; OFS="\t"; }  NR ==2 { print $2,$4,$6,$8,$10,$12,$14 }' > "${OUTPUT}"
 
-
+FIRST_UTIL=1;
 
 #Loop over directories
 for kd in $KLEE_DIRS ; do
+	#Grab the header
+	if [ ${FIRST_UTIL} -eq 1 ]; then
+		klee-stats "${kd}" | awk ' BEGIN { FS=" "; OFS="\t"; }  NR ==2 { print $2,$4,$6,$8,$10,$12,$14 }' > "${OUTPUT}"
+		echo "Grabbing header"
+		FIRST_UTIL=0;
+	fi
 	echo "Extracting from ${kd}..."
 	klee-stats "${kd}" | awk ' BEGIN { FS=" "; OFS="\t"; }  NR ==4 { print $2,$4,$6,$8,$10,$12,$14 }' >> "${OUTPUT}"
 done
