@@ -71,7 +71,7 @@ UTILS=( ["["]='--sym-args 0 1 10 --sym-args 0 4 3 --sym-files 2 10 --sym-stdout'
 	[pr]= \
 	[printenv]= \
 	[printf]='--sym-args 0 3 10 --sym-files 2 12 --sym-stdout' \
-	[ptx]= \
+	[ptx]='--sym-args 0 1 10 -- sym-args 0 10 2 --sym-files 1 50 --sym-stdout' \
 	[pwd]= \
 	[readlink]= \
 	[rm]= \
