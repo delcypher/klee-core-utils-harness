@@ -32,12 +32,13 @@ fi
 
 
 #Put header in
-echo -e "[min (bytes)]\t[max (bytes)]" > "${OUTPUT}"
+echo -e "[Directory]\t[min (bytes)]\t[max (bytes)]" > "${OUTPUT}"
 
 #Loop over directories
 for kd in $KLEE_DIRS ; do
 
 	echo "Processing...${kd}"
+	echo -en "${kd}\t" >> "${OUTPUT}"
 	cat "${kd}/smt2-file-sizes.log" | awk '
 	BEGIN { min=-1 ; max=0; OFS="\t";}
 	/^[^#]/ { 
