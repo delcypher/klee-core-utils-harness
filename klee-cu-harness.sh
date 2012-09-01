@@ -8,6 +8,9 @@ defaultArgs='--sym-args 0 1 10 --sym-args 0 2 2 --sym-files 1 8 --sym-stdout'
 
 RUN_IN="/home/dan/sandbox"
 
+#Allow more open files than the default
+ulimit -n 4096
+
 #setup trap so that C^C causes loop to exit
 trap exit SIGINT SIGTERM SIGQUIT
 
