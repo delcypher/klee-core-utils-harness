@@ -82,7 +82,7 @@ UTILS=( ["["]='--sym-args 0 1 10 --sym-args 0 4 3 --sym-files 2 10 --sym-stdout'
 	[shred]= \
 	[shuf]= \
 	[sleep]= \
-	[sort]= \
+	[sort]='--sym-args 0 1 10 --sym-args 0 22 2 --sym-files 1 50 --sym-stdout' \
 	[split]= \
 	[stat]= \
 	[stty]= \
@@ -140,6 +140,7 @@ do
 		echo "*****Running '${OUTPUT_DIR}' at $(date)"
 
 		#Now run klee
+		#NOTE if running sort will need to use --max-sym-array-size=1024
 		klee \
 		--solver=stp \
 #		--solver=smtlibv2 \
