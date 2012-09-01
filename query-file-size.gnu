@@ -6,6 +6,9 @@
 
 set mouse 
 
+#use log scale for file size
+set log y
+
 set xlabel "Query number"
 set ylabel "Query file size (MB)"
 
