@@ -61,7 +61,7 @@ do
 			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]} < "${query}" 2>&1 > "${ANS_FILE}" | grep -E '^real' )
 		else
 			#don't use stdin
-			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]}  "${query}" 2>&1 > ${ANS_FILE}  | grep -E '^real')
+			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]}  "${query}" 2>&1 > "${ANS_FILE}"  | grep -E '^real')
 
 		fi
 		
