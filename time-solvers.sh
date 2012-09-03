@@ -14,7 +14,7 @@ SOLVERS=(cvc3 mathsat sonolar stpwrap2 stp2wrap2 z3)
 
 #Solver options
 declare -A SOLVER_OPTS
-SOLVERS_OPTS=([cvc3]='-lang smt2' \
+SOLVER_OPTS=([cvc3]='-lang smt2' \
 	[mathsat]= \
 	[sonolar]= \
 	[stpwrap2]= \
@@ -57,10 +57,10 @@ do
 		#Decide if need to use stdin
 		if [  -n "${SOLVERS_USE_STDIN[$solver]}" ]; then
 			#use stdin
-			REC_TIME=$(${TIME} ${solver} ${SOLVERS_OPTS[${solver}]} < "${query}" 2>&1 > /dev/null | grep -E '^real' )
+			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]} < "${query}" 2>&1 > /dev/null | grep -E '^real' )
 		else
 			#don't use stdin
-			REC_TIME=$(${TIME} ${solver} ${SOLVERS_OPTS[${solver}]}  "${query}" 2>&1 > /dev/null | grep -E '^real')
+			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]}  "${query}" 2>&1 > /dev/null | grep -E '^real')
 
 		fi
 		
