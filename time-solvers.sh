@@ -7,6 +7,7 @@ INPUT_DIR="$1"
 TIME="/usr/bin/time -p"
 
 TEMP_FILE="temp.txt"
+ANS_FILE="answer.txt"
 
 
 #Solvers to use
@@ -15,7 +16,7 @@ SOLVERS=(cvc3 mathsat sonolar stpwrap2 stp2wrap2 z3)
 #Solver options
 declare -A SOLVER_OPTS
 SOLVER_OPTS=([cvc3]='-lang smt2' \
-	[mathsat]= \
+	[mathsat]='-printer.bv_number_format=2 -theory.la.enabled=false -theory.bv.delay_propagated_eqs=true -theory.arr.max_wr_lemmas=0 -theory.arr.enable_nonlinear=true -theory.arr.enable_witness=false -preprocessor.toplevel_propagation=true -preprocessor.simplification=7 -theory.arr.permanent_lemma_inst=true -dpll.branching_random_frequency=0 -theory.bv.eager=false' \
 	[sonolar]= \
 	[stpwrap2]= \
 	[stp2wrap2]= \
@@ -57,15 +58,22 @@ do
 		#Decide if need to use stdin
 		if [  -n "${SOLVERS_USE_STDIN[$solver]}" ]; then
 			#use stdin
-			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]} < "${query}" 2>&1 > /dev/null | grep -E '^real' )
+			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]} < "${query}" 2>&1 > "${ANS_FILE}" | grep -E '^real' )
 		else
 			#don't use stdin
-			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]}  "${query}" 2>&1 > /dev/null | grep -E '^real')
+			REC_TIME=$(${TIME} ${solver} ${SOLVER_OPTS[${solver}]}  "${query}" 2>&1 > ${ANS_FILE}  | grep -E '^real')
 
 		fi
 		
 		#Grab the wall time
 		REC_TIME=$(echo "${REC_TIME}" | sed 's/^real //')
+
+		#check the solver's answer
+		if [ $( grep -Ec --max-count=1 '^(sat|unsat|unknown)' "${ANS_FILE}") -ne 1 ]; then
+			echo "Solver error for query ${query}"
+			exit 1;
+		fi
+
 
 		echo -en "${REC_TIME}\t"
 
